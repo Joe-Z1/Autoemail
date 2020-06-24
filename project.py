@@ -2,11 +2,11 @@ from tkinter import *
 import sqlite3
 
 win = Tk()
-win.geometry('700x800')
+win.geometry('400x400')
 win.title("Auto Email")
 
 f = LabelFrame(win)
-f.pack(fill="both", expand="yes")
+f.place(anchor="center")
 
 # submit email and password and insert into sql database
 user = sqlite3.connect('user.db')
@@ -21,7 +21,8 @@ def submit():
                   'Email': Email.get(),
                   'Password': Password.get()
               })
-
+    Email.delete(0, END)
+    Password.delete(0, END)
     user.commit()
     user.close()
 
@@ -37,10 +38,11 @@ def query():
 
     print_records = ''
     for record in records:
-        print_records += str(record[0]) + "\n"
+        print_records += str(record[0]) + " " + str(record[2]) + "\n "
 
-    query_label = Label(f, text=print_records)
-    query_label.pack()
+    query_label = Label(win, text=print_records, font=10)
+    query_label.place(relx=.4, rely=.65)
+
     user.commit()
     user.close()
 
@@ -61,35 +63,44 @@ def create():
 def delete():
     user = sqlite3.connect('user.db')
     c = user.cursor()
-    c.execute("DELETE from user WHERE oid=PLACEHOLDER")
+    c.execute("DELETE from user WHERE oid=" + Dety.get())
+    Dety.delete(0, END)
     user.commit()
     user.close()
 
 
-email_label = Label(f, text="Email")
-email_label.pack(padx=20)
-Email = Entry(f, font=40)
-Email.pack()
+# Labels
+email_label = Label(win, text="Email", font=40)
+email_label.place(relx=.25, rely=.3)
+password_label = Label(win, text="Password", font=40)
+password_label.place(relx=.2, rely=.38)
+
+# Entries
+Email = Entry(win, font=40, bg="light gray")
+Email.place(relx=.40, rely=.3)
+
+Password = Entry(win, font=40, bg="light gray", show="*")
+Password.place(relx=.40, rely=.38)
+
+Dety = Entry(win, font=40)
+Dety.place(relx=.35, rely=.55)
 
 
-password_label = Label(f, text="Password")
-password_label.pack()
-Password = Entry(f, font=40)
-Password.pack()
-
-button = Button(f, text="submit", font=40, command=lambda: submit())
-button.pack()
+# Buttons
+Subtn = Button(win, text="Submit", font=40,
+               width=20, relief=GROOVE, command=lambda: submit())
+Subtn.place(relx=.30, rely=.46)
 
 # query Button
-Qbutton = Button(f, text="Test", command=query)
-Qbutton.pack()
+Qbutton = Button(win, text="Print Records", command=query, font=40)
+Qbutton.place(relx=.1, rely=.65)
 
 # create database
-createbtn = Button(f, text="Create Database", command=create)
+createbtn = Button(win, text="Create Database", command=create)
 createbtn.pack()
 
-Dbtn = Button(f, text="Delete", command=delete)
-Dbtn.pack()
+Dbtn = Button(win, text="Delete", command=delete, font=40)
+Dbtn.place(relx=.2, rely=.55)
 
 
 win.mainloop()
