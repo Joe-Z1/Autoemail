@@ -1,5 +1,7 @@
 from tkinter import *
 import sqlite3
+from selenium import webdriver
+import time
 
 win = Tk()
 win.geometry('400x400')
@@ -11,6 +13,8 @@ f.place(anchor="center")
 # submit email and password and insert into sql database
 user = sqlite3.connect('user.db')
 c = user.cursor()
+
+url = ["https://login.live.com/", "google.com"]
 
 
 def submit():
@@ -26,7 +30,8 @@ def submit():
     user.commit()
     user.close()
 
-# print all valuse in database
+
+# print all values in database
 
 
 def query():
@@ -45,6 +50,17 @@ def query():
 
     user.commit()
     user.close()
+
+    for record in records:
+        btn = Button(win, text=record[0], command=lambda: login())
+        btn.place(relx=.2, rely=.8)
+
+
+def login():
+    driver = webdriver.Chrome()
+    driver.get(url[0])
+    username = driver.find_element_by_id(
+        "i0116").send_keys(str(record[0]))
 
 
 def create():
@@ -71,25 +87,25 @@ def delete():
 
 # Labels
 email_label = Label(win, text="Email", font=40)
-email_label.place(relx=.25, rely=.3)
+email_label.place(relx=.25, rely=.2)
 password_label = Label(win, text="Password", font=40)
-password_label.place(relx=.2, rely=.38)
+password_label.place(relx=.2, rely=.28)
 
 # Entries
 Email = Entry(win, font=40, bg="light gray")
-Email.place(relx=.40, rely=.3)
+Email.place(relx=.40, rely=.2)
 
 Password = Entry(win, font=40, bg="light gray", show="*")
-Password.place(relx=.40, rely=.38)
+Password.place(relx=.40, rely=.28)
 
-Dety = Entry(win, font=40)
-Dety.place(relx=.35, rely=.55)
+Dety = Entry(win, font=40, bg="light gray")
+Dety.place(relx=.4, rely=.56)
 
 
 # Buttons
 Subtn = Button(win, text="Submit", font=40,
                width=20, relief=GROOVE, command=lambda: submit())
-Subtn.place(relx=.30, rely=.46)
+Subtn.place(relx=.30, rely=.36)
 
 # query Button
 Qbutton = Button(win, text="Print Records", command=query, font=40)
@@ -102,5 +118,7 @@ createbtn.pack()
 Dbtn = Button(win, text="Delete", command=delete, font=40)
 Dbtn.place(relx=.2, rely=.55)
 
+v = Scrollbar(win)
+v.pack(side=RIGHT, fill=Y)
 
 win.mainloop()
