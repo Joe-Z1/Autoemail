@@ -54,13 +54,16 @@ def query():
     for record in records:
         btn = Button(win, text=record[0], command=lambda: login())
         btn.place(relx=.2, rely=.8)
+        # login and use first record to fill in username
 
-
-def login():
-    driver = webdriver.Chrome()
-    driver.get(url[0])
-    username = driver.find_element_by_id(
-        "i0116").send_keys(str(record[0]))
+    def login():
+        driver = webdriver.Chrome()
+        driver.get(url[0])
+        username = driver.find_element_by_id(
+            "i0116").send_keys(str(record[0]))
+        nextScreen = driver.find_element_by_id("idSIButton9").click()
+        time.sleep(1)
+        password = driver.find_element_by_id("i0118").send_keys(record[1])
 
 
 def create():
@@ -72,8 +75,8 @@ def create():
     """)
     user.commit()
     user.close()
-    msg = Label(f, text="Database Created")
-    msg.pack()
+    msg = Label(win, text="Database Created")
+    msg.place(relx=.38, rely=.1)
 
 
 def delete():
@@ -108,15 +111,15 @@ Subtn = Button(win, text="Submit", font=40,
 Subtn.place(relx=.30, rely=.36)
 
 # query Button
-Qbutton = Button(win, text="Print Records", command=query, font=40)
+Qbutton = Button(win, text="Create Buttons", command=query, font=40)
 Qbutton.place(relx=.1, rely=.65)
 
 # create database
 createbtn = Button(win, text="Create Database", command=create)
 createbtn.pack()
 
-Dbtn = Button(win, text="Delete", command=delete, font=40)
-Dbtn.place(relx=.2, rely=.55)
+Dbtn = Button(win, text="Delete by ID", command=delete, font=40)
+Dbtn.place(relx=.10, rely=.55)
 
 v = Scrollbar(win)
 v.pack(side=RIGHT, fill=Y)
